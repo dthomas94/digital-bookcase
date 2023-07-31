@@ -2,6 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
+import { Controller, useForm } from "react-hook-form";
+import { login } from "../../api/login";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -32,13 +34,56 @@ const StyledButton = styled.Pressable`
   margin-top: 10px;
 `;
 
+type LoginFormData = {
+  email: string;
+  password: string;
+};
+
 export const LoginForm = () => {
+  const {
+    register,
+    control,
+    setValue,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<LoginFormData>();
+  const onSubmit = () => {
+    const data = getValues();
+    login(data.email, data.password);
+  };
+
   return (
     <StyledView>
-      <StyledTextInput placeholder="Email Address" />
-      <StyledTextInput secureTextEntry placeholder="Password" />
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <StyledTextInput
+            placeholder="Email Address"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+            autoCapitalize="none"
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <StyledTextInput
+            secureTextEntry
+            placeholder="Password"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
+      />
+
       <View style={{ alignSelf: "flex-end", marginTop: 10 }}>
-        <StyledButton onPress={() => {}} accessibilityLabel="Login">
+        <StyledButton onPress={() => onSubmit()} accessibilityLabel="Login">
           <Text style={{ color: "white" }}>LOGIN</Text>
           <AntDesign name="arrowright" size={20} color="white" />
         </StyledButton>
