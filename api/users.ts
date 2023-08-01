@@ -7,11 +7,25 @@ export const createUser = async (userData: {
   name: string;
   email: string;
   password: string;
-  password_confirmation: string;
 }) => {
   try {
-    const res = await axios.get(`${url}/users/new`, { data: { ...userData } });
+    const res = await axios.post(`${url}/signup`, { user: { ...userData } });
+    return res.data.user;
   } catch (err: any) {
-    throw new Error(err.message);
+    // janky way of getting error message because of Devise on the backend
+    console.error(err.response.data.status.message);
+  }
+};
+
+export const login = async (email: string, password: string) => {
+  try {
+    const res = await axios.post(`${url}/login`, {
+      email,
+      password,
+    });
+    return res.data.user;
+  } catch (err: any) {
+    // janky way of getting error message because of Devise on the backend
+    console.error(err.response.data.status.message);
   }
 };

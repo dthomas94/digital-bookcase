@@ -3,6 +3,7 @@ import { LoginForm } from "../components/forms/LoginForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { styled } from "styled-components/native";
+import { SignupForm } from "../components/forms/SignupForm";
 
 const StyledView = styled.View`
   flex: 1;
@@ -25,32 +26,32 @@ const StyledSubheading = styled.Text`
   font-weight: bold;
 `;
 
-const StyledSignupText = styled.Text`
+const StyledLoginText = styled.Text`
   align-self: center;
   position: absolute;
   bottom: 50px;
 `;
 
-export type LoginScreenProps = NativeStackScreenProps<
+export type SignupScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "Login"
+  "Signup"
 >;
 
-export const LoginScreen = ({ route, navigation }: LoginScreenProps) => (
+export const SignupScreen = ({ route, navigation }: SignupScreenProps) => (
   <StyledView>
     <View>
-      <StyledHeading>Login</StyledHeading>
-      <StyledSubheading>Please sign in to continue.</StyledSubheading>
+      <StyledHeading>Sign Up</StyledHeading>
+      <StyledSubheading>Please sign up to continue.</StyledSubheading>
     </View>
-    <LoginForm />
-    <StyledSignupText>
-      Don't have an account?{" "}
+    <SignupForm />
+    <StyledLoginText>
+      Already have an account?{" "}
       <Text
-        onPress={() => navigation.replace("Signup")}
+        onPress={() => navigation.replace("Login")}
         style={{ color: "rgb(255, 164, 61)" }}
       >
-        Sign Up
+        Log In
       </Text>
-    </StyledSignupText>
+    </StyledLoginText>
   </StyledView>
 );
