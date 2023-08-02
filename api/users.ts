@@ -24,18 +24,14 @@ export const login = async (email: string, password: string) => {
       email,
       password,
     });
-
-    const token = await AsyncStorage.getItem("authToken");
-    if (token) {
-      console.log("User is logged in");
-    } else {
-      await AsyncStorage.setItem("authToken", res.headers.authorization);
-    }
+    const token = res.headers.authorization;
+    await AsyncStorage.setItem("authToken", token);
+    console.log("User is logged in:", token);
 
     return res.data.user;
   } catch (err: any) {
     // janky way of getting error message because of Devise on the backend
-    console.error(err.response.data.status.message);
+    console.error(err.response.data.message);
   }
 };
 
@@ -43,7 +39,7 @@ export const logout = async () => {
   try {
     const res = await axios.delete(`${url}/logout`);
 
-    await AsyncStorage.setItem("authToken", res.headers.authorization);
+    await AsyncStorage.removeItem("authToken");
     return res.data.user;
   } catch (err: any) {
     // janky way of getting error message because of Devise on the backend
