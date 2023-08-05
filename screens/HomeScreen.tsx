@@ -1,5 +1,4 @@
 import { Text, View } from "react-native";
-import { logout } from "../api/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const HomeScreen = () => (

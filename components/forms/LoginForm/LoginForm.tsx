@@ -3,7 +3,8 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { createUser, login } from "../../api/users";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER_MUTATION } from "./gql/mutations/loginUser";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -34,13 +35,14 @@ const StyledButton = styled.Pressable`
   margin-top: 10px;
 `;
 
-type SignupFormData = {
-  name: string;
+type LoginFormData = {
   email: string;
   password: string;
 };
 
-export const SignupForm = () => {
+export const LoginForm = () => {
+  const [loginUser, { data, loading, error }] =
+    useMutation(LOGIN_USER_MUTATION);
   const {
     register,
     control,
@@ -48,28 +50,14 @@ export const SignupForm = () => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<SignupFormData>();
+  } = useForm<LoginFormData>();
   const onSubmit = () => {
     const data = getValues();
-    createUser(data);
+    loginUser({ variables: { input: { credentials: { ...data } } } });
   };
 
   return (
     <StyledView>
-      <Controller
-        control={control}
-        name="name"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <StyledTextInput
-            placeholder="Full Name"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-            autoCapitalize="none"
-            returnKeyType="next"
-          />
-        )}
-      />
       <Controller
         control={control}
         name="email"
@@ -99,7 +87,7 @@ export const SignupForm = () => {
 
       <View style={{ alignSelf: "flex-end", marginTop: 10 }}>
         <StyledButton onPress={() => onSubmit()} accessibilityLabel="Login">
-          <Text style={{ color: "white" }}>Sign Up</Text>
+          <Text style={{ color: "white" }}>LOGIN</Text>
           <AntDesign name="arrowright" size={20} color="white" />
         </StyledButton>
       </View>

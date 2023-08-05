@@ -1,9 +1,8 @@
 import { Text, View } from "react-native";
-import { LoginForm } from "../components/forms/LoginForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { styled } from "styled-components/native";
-import { SignupForm } from "../components/forms/SignupForm";
+import { SignupForm } from "components/forms/SignupForm/SignupForm";
 
 const StyledView = styled.View`
   flex: 1;

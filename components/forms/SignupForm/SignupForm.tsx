@@ -3,7 +3,8 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { login } from "../../api/users";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER_MUTATION } from "./gql/mutations/createUser";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -34,12 +35,13 @@ const StyledButton = styled.Pressable`
   margin-top: 10px;
 `;
 
-type LoginFormData = {
+type SignupFormData = {
+  name: string;
   email: string;
   password: string;
 };
 
-export const LoginForm = () => {
+export const SignupForm = () => {
   const {
     register,
     control,
@@ -47,14 +49,40 @@ export const LoginForm = () => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<SignupFormData>();
+  const [createUser, { data, loading, error }] =
+    useMutation(CREATE_USER_MUTATION);
+
   const onSubmit = () => {
-    const data = getValues();
-    login(data.email, data.password);
+    const formData = getValues();
+    createUser({
+      variables: {
+        input: {
+          name: formData.name,
+          credentials: { email: formData.email, password: formData.password },
+        },
+      },
+    });
   };
+
+  if (loading) return <Text>...Loading</Text>;
 
   return (
     <StyledView>
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <StyledTextInput
+            placeholder="Full Name"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+            autoCapitalize="none"
+            returnKeyType="next"
+          />
+        )}
+      />
       <Controller
         control={control}
         name="email"
@@ -84,7 +112,7 @@ export const LoginForm = () => {
 
       <View style={{ alignSelf: "flex-end", marginTop: 10 }}>
         <StyledButton onPress={() => onSubmit()} accessibilityLabel="Login">
-          <Text style={{ color: "white" }}>LOGIN</Text>
+          <Text style={{ color: "white" }}>Sign Up</Text>
           <AntDesign name="arrowright" size={20} color="white" />
         </StyledButton>
       </View>
