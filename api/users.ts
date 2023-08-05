@@ -10,7 +10,8 @@ export const createUser = async (userData: {
   password: string;
 }) => {
   try {
-    const res = await axios.post(`${url}/signup`, { user: { ...userData } });
+    const res = await axios.post(`${url}`, { user: { ...userData } });
+    console.log(res.headers.authorization);
     return res.data.user;
   } catch (err: any) {
     // janky way of getting error message because of Devise on the backend
@@ -20,7 +21,7 @@ export const createUser = async (userData: {
 
 export const login = async (email: string, password: string) => {
   try {
-    const res = await axios.post(`${url}/login`, {
+    const res = await axios.post(`${url}`, {
       email,
       password,
     });
@@ -28,16 +29,17 @@ export const login = async (email: string, password: string) => {
     await AsyncStorage.setItem("authToken", token);
     console.log("User is logged in:", token);
 
-    return res.data.user;
+    return true;
   } catch (err: any) {
     // janky way of getting error message because of Devise on the backend
     console.error(err.response.data.message);
+    return false;
   }
 };
 
 export const logout = async () => {
   try {
-    const res = await axios.delete(`${url}/logout`);
+    const res = await axios.delete(`${url}`);
 
     await AsyncStorage.removeItem("authToken");
     return res.data.user;
