@@ -42,7 +42,7 @@ export const SignupScreen = ({ route, navigation }: SignupScreenProps) => (
       <StyledHeading>Sign Up</StyledHeading>
       <StyledSubheading>Please sign up to continue.</StyledSubheading>
     </View>
-    <SignupForm />
+    <SignupForm onSignup={() => navigation.replace("Home")} />
     <StyledLoginText>
       Already have an account?{" "}
       <Text

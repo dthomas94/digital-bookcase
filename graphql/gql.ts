@@ -14,7 +14,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation LoginUser($input: LoginUserInput!) {\n    loginUser(input: $input) {\n      user {\n        id\n        name\n      }\n    }\n  }\n": types.LoginUserDocument,
-    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n    }\n  }\n": types.CreateUserDocument,
+    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      user {\n        name\n        email\n        id\n        jti\n      }\n    }\n  }\n": types.CreateUserDocument,
+    "\n  query CurrentUser {\n    currentUser {\n      name\n      email\n      id\n      jti\n    }\n  }\n": types.CurrentUserDocument,
 };
 
 /**
@@ -38,7 +39,11 @@ export function graphql(source: "\n  mutation LoginUser($input: LoginUserInput!)
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n    }\n  }\n"];
+export function graphql(source: "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      user {\n        name\n        email\n        id\n        jti\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      user {\n        name\n        email\n        id\n        jti\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query CurrentUser {\n    currentUser {\n      name\n      email\n      id\n      jti\n    }\n  }\n"): (typeof documents)["\n  query CurrentUser {\n    currentUser {\n      name\n      email\n      id\n      jti\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

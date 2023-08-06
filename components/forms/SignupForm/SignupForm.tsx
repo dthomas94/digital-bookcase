@@ -5,6 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER_MUTATION } from "./gql/mutations/createUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -41,7 +42,7 @@ type SignupFormData = {
   password: string;
 };
 
-export const SignupForm = () => {
+export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
   const {
     register,
     control,
@@ -53,9 +54,9 @@ export const SignupForm = () => {
   const [createUser, { data, loading, error }] =
     useMutation(CREATE_USER_MUTATION);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const formData = getValues();
-    createUser({
+    await createUser({
       variables: {
         input: {
           name: formData.name,
@@ -64,6 +65,12 @@ export const SignupForm = () => {
       },
     });
   };
+
+  if (data) {
+    console.log(data);
+    AsyncStorage.setItem("jti", data.createUser.user.jti);
+    onSignup();
+  }
 
   if (loading) return <Text>...Loading</Text>;
 
