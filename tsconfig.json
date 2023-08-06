@@ -5,7 +5,8 @@
     "baseUrl": ".",
     "paths": {
       "screens": ["./screens"],
-      "components": ["./components"]
+      "components": ["./components"],
+      "api": ["./api"]
     }
   }
 }

@@ -4,7 +4,6 @@ import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER_MUTATION } from "./gql/mutations/loginUser";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -41,8 +40,6 @@ type LoginFormData = {
 };
 
 export const LoginForm = () => {
-  const [loginUser, { data, loading, error }] =
-    useMutation(LOGIN_USER_MUTATION);
   const {
     register,
     control,
@@ -53,7 +50,6 @@ export const LoginForm = () => {
   } = useForm<LoginFormData>();
   const onSubmit = () => {
     const data = getValues();
-    loginUser({ variables: { input: { credentials: { ...data } } } });
   };
 
   return (

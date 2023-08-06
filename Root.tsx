@@ -5,8 +5,6 @@ import { LoginScreen } from "screens/LoginScreen";
 import { SignupScreen } from "screens/SignupScreen";
 import { HomeScreen } from "screens/HomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GET_USER_QUERY } from "components/forms/SignupForm/gql/queries/getUser";
-import { Text } from "react-native";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -17,15 +15,6 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const Root = () => {
-  const { data, error, loading } = useQuery(GET_USER_QUERY);
-
-  if (loading) return <Text>...Loading</Text>;
-
-  if (error) {
-    console.error(error);
-  }
-
-  if (data) console.log(data);
   return (
     <NavigationContainer>
       <Stack.Navigator>

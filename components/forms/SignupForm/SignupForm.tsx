@@ -3,9 +3,7 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "@apollo/client";
-import { CREATE_USER_MUTATION } from "./gql/mutations/createUser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { signupUser } from "api/user";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -51,28 +49,12 @@ export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
     getValues,
     formState: { errors },
   } = useForm<SignupFormData>();
-  const [createUser, { data, loading, error }] =
-    useMutation(CREATE_USER_MUTATION);
 
   const onSubmit = async () => {
     const formData = getValues();
-    await createUser({
-      variables: {
-        input: {
-          name: formData.name,
-          credentials: { email: formData.email, password: formData.password },
-        },
-      },
-    });
-  };
-
-  if (data) {
-    console.log(data);
-    AsyncStorage.setItem("jti", data.createUser.user.jti);
+    await signupUser(formData);
     onSignup();
-  }
-
-  if (loading) return <Text>...Loading</Text>;
+  };
 
   return (
     <StyledView>
