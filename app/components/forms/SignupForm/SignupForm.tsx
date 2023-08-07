@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import { signupUser } from "api/user";
+import { useApolloClient } from "@apollo/client";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -42,18 +43,23 @@ type SignupFormData = {
 
 export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
   const {
-    register,
     control,
-    setValue,
-    handleSubmit,
     getValues,
     formState: { errors },
   } = useForm<SignupFormData>();
+  const client = useApolloClient();
 
   const onSubmit = async () => {
     const formData = getValues();
     await signupUser(formData);
     onSignup();
+    client.cache.modify({
+      fields: {
+        user(data) {
+          console.log(data);
+        },
+      },
+    });
   };
 
   return (

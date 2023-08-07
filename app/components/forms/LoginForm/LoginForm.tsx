@@ -3,7 +3,8 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
+import { loginUser } from "api/user";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -39,17 +40,24 @@ type LoginFormData = {
   password: string;
 };
 
-export const LoginForm = () => {
+export const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
   const {
-    register,
     control,
-    setValue,
-    handleSubmit,
     getValues,
     formState: { errors },
   } = useForm<LoginFormData>();
-  const onSubmit = () => {
-    const data = getValues();
+  const client = useApolloClient();
+  const onSubmit = async () => {
+    const formData = getValues();
+    const user = await loginUser(formData);
+    client.cache.modify({
+      fields: {
+        user(data) {
+          return user;
+        },
+      },
+    });
+    onLogin();
   };
 
   return (

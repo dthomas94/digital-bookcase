@@ -14,5 +14,22 @@ export const signupUser = async (userData: {
 }) => {
   const res = await axios.post(`${uri}/signup`, { user: { ...userData } });
 
-  await AsyncStorage.setItem("token", res.headers.authorization);
+  if (res?.headers) {
+    console.log(res.headers.authorization);
+    await AsyncStorage.setItem("token", res.headers.authorization);
+  }
+};
+
+export const loginUser = async (userData: {
+  email: string;
+  password: string;
+}) => {
+  const res = await axios.post(`${uri}/login`, { user: { ...userData } });
+
+  if (res?.headers) {
+    console.log(res.headers.authorization);
+    await AsyncStorage.setItem("token", res.headers.authorization);
+  }
+
+  return res;
 };

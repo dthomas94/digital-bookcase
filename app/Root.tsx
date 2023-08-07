@@ -18,13 +18,6 @@ export const Root = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* {auth?.isLoggedIn ? (
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-        ) : ( */}
         <>
           <Stack.Screen
             name="Login"
@@ -36,8 +29,12 @@ export const Root = () => {
             component={SignupScreen}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
         </>
-        {/* )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );
