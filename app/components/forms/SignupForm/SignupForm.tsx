@@ -41,7 +41,7 @@ type SignupFormData = {
   password: string;
 };
 
-export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
+export const SignupForm = () => {
   const {
     control,
     getValues,
@@ -52,7 +52,6 @@ export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
   const onSubmit = async () => {
     const formData = getValues();
     await signupUser(formData);
-    onSignup();
     client.cache.modify({
       fields: {
         user(data) {
