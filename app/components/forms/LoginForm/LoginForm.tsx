@@ -40,7 +40,7 @@ type LoginFormData = {
   password: string;
 };
 
-export const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
+export const LoginForm = () => {
   const {
     control,
     getValues,
@@ -57,7 +57,6 @@ export const LoginForm = ({ onLogin }: { onLogin: () => void }) => {
         },
       },
     });
-    onLogin();
   };
 
   return (

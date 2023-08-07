@@ -1,19 +1,27 @@
-import { useQuery } from "@apollo/client";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+  createDrawerNavigator,
+} from "@react-navigation/drawer";
+import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { LoginScreen } from "screens/LoginScreen";
 import { SignupScreen } from "screens/SignupScreen";
 import { HomeScreen } from "screens/HomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { logoutUser } from "api/user";
+import axios from "axios";
 
-export type RootStackParamList = {
+export type RootDrawerParamList = {
   Login: undefined;
   Signup: undefined;
   Home: undefined;
+  Logout: undefined;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 export const Root = () => {
   const [userToken, setUserToken] = useState("");
@@ -21,7 +29,10 @@ export const Root = () => {
   const getUserToken = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      if (token) setUserToken(token);
+      if (token) {
+        setUserToken(token);
+        axios.defaults.headers.common["Authorization"] = token;
+      }
     } finally {
       return;
     }
@@ -33,28 +44,68 @@ export const Root = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Drawer.Navigator
+        initialRouteName="Login"
+        drawerContent={(props) => (
+          <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+            {!!userToken && (
+              <DrawerItem
+                label="Logout"
+                onPress={() => logoutUser()}
+                icon={() => (
+                  <MaterialIcons name="logout" size={24} color="black" />
+                )}
+              />
+            )}
+          </DrawerContentScrollView>
+        )}
+      >
         {!!userToken ? (
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
+          <>
+            <Drawer.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                drawerLabel: "Home",
+                headerTitle: "",
+                drawerIcon: () => (
+                  <MaterialIcons name="home" size={24} color="black" />
+                ),
+              }}
+            />
+          </>
         ) : (
           <>
-            <Stack.Screen
+            <Drawer.Screen
               name="Login"
               component={LoginScreen}
-              options={{ headerShown: false }}
+              options={{
+                drawerLabel: "Login",
+                headerTitle: "",
+                drawerIcon: () => (
+                  <MaterialIcons name="login" size={24} color="black" />
+                ),
+              }}
             />
-            <Stack.Screen
+            <Drawer.Screen
               name="Signup"
               component={SignupScreen}
-              options={{ headerShown: false }}
+              options={{
+                drawerLabel: "Signup",
+                headerTitle: "",
+                drawerIcon: () => (
+                  <MaterialIcons
+                    name="person-add-alt-1"
+                    size={24}
+                    color="black"
+                  />
+                ),
+              }}
             />
           </>
         )}
-      </Stack.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 };

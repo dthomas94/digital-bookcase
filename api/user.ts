@@ -33,3 +33,17 @@ export const loginUser = async (userData: {
 
   return res;
 };
+
+export const logoutUser = async () => {
+  try {
+    const res = await axios.delete(`${uri}/logout`);
+
+    if (res) {
+      await AsyncStorage.removeItem("token");
+      console.log(res.headers.authorization);
+      return res;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};

@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { LoginForm } from "components/forms/LoginForm/LoginForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "";
+import { RootDrawerParamList } from "";
 import { styled } from "styled-components/native";
 
 const StyledView = styled.View`
@@ -32,7 +32,7 @@ const StyledSignupText = styled.Text`
 `;
 
 export type LoginScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  RootDrawerParamList,
   "Login"
 >;
 

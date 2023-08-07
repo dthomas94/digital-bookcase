@@ -1,10 +1,10 @@
 import { Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootStackParamList } from "app/Root";
+import { RootDrawerParamList } from "app/Root";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type HomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  RootDrawerParamList,
   "Home"
 >;
 
