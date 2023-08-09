@@ -1,6 +1,6 @@
 import axios from "axios";
 import { REACT_APP_DEV_API, REACT_APP_PROD_API } from "@env";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 const uri =
   process.env.NODE_ENV === "development"
@@ -16,7 +16,7 @@ export const signupUser = async (userData: {
 
   if (res?.headers) {
     console.log(res.headers.authorization);
-    await AsyncStorage.setItem("token", res.headers.authorization);
+    await SecureStore.setItemAsync("token", res.headers.authorization);
   }
 };
 
@@ -28,7 +28,7 @@ export const loginUser = async (userData: {
 
   if (res?.headers) {
     console.log(res.headers.authorization);
-    await AsyncStorage.setItem("token", res.headers.authorization);
+    await SecureStore.setItemAsync("token", res.headers.authorization);
   }
 
   return res;
@@ -39,7 +39,7 @@ export const logoutUser = async () => {
     const res = await axios.delete(`${uri}/logout`);
 
     if (res) {
-      await AsyncStorage.removeItem("token");
+      await SecureStore.deleteItemAsync("token");
       console.log(res.headers.authorization);
       return res;
     }

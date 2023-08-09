@@ -9,10 +9,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { LoginScreen } from "screens/LoginScreen";
 import { SignupScreen } from "screens/SignupScreen";
 import { HomeScreen } from "screens/HomeScreen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { logoutUser } from "api/user";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 export type RootDrawerParamList = {
   Login: undefined;
@@ -28,7 +28,7 @@ export const Root = () => {
 
   const getUserToken = async () => {
     try {
-      const token = await AsyncStorage.getItem("token");
+      const token = await SecureStore.getItemAsync("token");
       if (token) {
         setUserToken(token);
         axios.defaults.headers.common["Authorization"] = token;
