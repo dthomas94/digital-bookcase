@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation CreateBookcase($input: CreateBookcaseInput!) {\n    createBookcase(input: $input) {\n      bookcase {\n        name\n      }\n    }\n  }\n": types.CreateBookcaseDocument,
-    "\n  query Works($title: String) {\n    works(title: $title) {\n      lastModified\n      data {\n        title\n        created\n        lastModified\n      }\n      authors {\n        data {\n          name\n        }\n      }\n    }\n  }\n": types.WorksDocument,
+    "\n  query Works($title: String) {\n    worksConnection(title: $title) {\n      nodes {\n        title\n        authors {\n          name\n        }\n      }\n    }\n  }\n": types.WorksDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function graphql(source: "\n  mutation CreateBookcase($input: CreateBookc
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Works($title: String) {\n    works(title: $title) {\n      lastModified\n      data {\n        title\n        created\n        lastModified\n      }\n      authors {\n        data {\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query Works($title: String) {\n    works(title: $title) {\n      lastModified\n      data {\n        title\n        created\n        lastModified\n      }\n      authors {\n        data {\n          name\n        }\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query Works($title: String) {\n    worksConnection(title: $title) {\n      nodes {\n        title\n        authors {\n          name\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query Works($title: String) {\n    worksConnection(title: $title) {\n      nodes {\n        title\n        authors {\n          name\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

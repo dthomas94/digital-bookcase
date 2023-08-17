@@ -6,7 +6,8 @@
     "paths": {
       "screens/*": ["./app/screens/*"],
       "components/*": ["./app/components/*"],
-      "api/*": ["./api/*"]
+      "api/*": ["./api/*"],
+      "utils/*": ["./app/utils/*"]
     }
   }
 }

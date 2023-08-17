@@ -10,6 +10,7 @@ module.exports = function (api) {
             screens: "./app/screens",
             components: "./app/components",
             api: "./api",
+            utils: "./app/utils",
           },
         },
       ],

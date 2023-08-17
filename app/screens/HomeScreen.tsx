@@ -1,60 +1,44 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { RootDrawerParamList } from "app/Root";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TextInput } from "components/inputs/TextInput/TextInput";
-import { useEffect, useState } from "react";
-import { ScrollView } from "react-native-gesture-handler";
-import { Work, WorksQuery } from "graphql/graphql";
+import { useCallback, useEffect, useState } from "react";
+import { Work, WorkConnection } from "graphql/graphql";
 import { useQuery } from "@apollo/client";
 import { GET_WORKS } from "./gql/queries/getWorks";
+import { debounce } from "utils/debounce";
 
 export type HomeScreenProps = NativeStackScreenProps<
   RootDrawerParamList,
   "Home"
 >;
 export const HomeScreen = ({ navigation }: HomeScreenProps) => {
-  const [searchVal, setSearchVal] = useState("");
-  const [searchResults, setSearchResults] = useState<Work[] | []>([]);
-  const { loading, data, error, refetch } = useQuery<{ works: Work[] }>(
-    GET_WORKS
-  );
+  const [, setSearchVal] = useState("");
+  const { loading, data, error, refetch } = useQuery<{
+    worksConnection: WorkConnection;
+  }>(GET_WORKS);
 
-  useEffect(() => {
-    const asyncSearch = async () => {
-      if (searchVal) {
-        await refetch({ title: searchVal });
-      }
-    };
+  const onChange = async (value: string) => {
+    setSearchVal(value);
+    await refetch({ title: value });
+  };
 
-    asyncSearch();
-  }, [searchVal]);
+  const debounceOnChange = useCallback(debounce(onChange, 300), []);
 
-  useEffect(() => {
-    if (data) {
-      setSearchResults(data.works);
-    }
-  }, [data]);
-
-  if (loading) return <Text>Loading...</Text>;
+  if (loading) return <ActivityIndicator size="large" />;
 
   if (error) return <Text>Error</Text>;
 
   return (
     <View>
-      <TextInput onChange={(value) => setSearchVal(value)} />
+      <TextInput onChange={(value) => debounceOnChange(value)} />
       <FlatList
-        data={searchResults}
-        renderItem={({
-          item: {
-            authors,
-            data: { title },
-            key,
-          },
-        }) => (
-          <Text key={key}>
-            <Text>{title}</Text>
-            {authors?.map((author) => (
-              <Text>-{author.data.name}</Text>
+        data={data?.worksConnection.nodes}
+        renderItem={({ item }) => (
+          <Text key={item?.key}>
+            <Text>{item?.title}</Text>
+            {item?.authors?.map((author) => (
+              <Text>-{author.name}</Text>
             ))}
           </Text>
         )}
