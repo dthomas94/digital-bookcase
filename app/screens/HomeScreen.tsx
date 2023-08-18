@@ -3,10 +3,11 @@ import { RootDrawerParamList } from "app/Root";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TextInput } from "components/inputs/TextInput/TextInput";
 import { useCallback, useState } from "react";
-import { WorkConnection } from "graphql/graphql";
+import { Work, WorkConnection } from "graphql/graphql";
 import { useQuery } from "@apollo/client";
 import { GET_WORKS } from "./gql/queries/getWorks";
 import { debounce } from "utils/debounce";
+import { Book } from "components/Book";
 
 export type HomeScreenProps = NativeStackScreenProps<
   RootDrawerParamList,
@@ -45,10 +46,14 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
   );
 
   return (
-    <View style={{ paddingBottom: 100 }}>
+    <View style={{ paddingBottom: 100, paddingHorizontal: 10 }}>
       <TextInput onChange={(value) => debounceOnChange(value)} />
       <FlatList
-        style={{ paddingBottom: 100 }}
+        style={{
+          paddingBottom: 100,
+        }}
+        numColumns={2}
+        horizontal={false}
         onEndReachedThreshold={0.2}
         onEndReached={
           hasNextPage
@@ -81,15 +86,11 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
         }
         data={works?.nodes}
         keyExtractor={(item, index) => `${index}`}
-        renderItem={({ item, index }) => (
-          <View>
-            <Text>
-              <Text>{item?.title}</Text>
-              {item?.authors?.map((author) => (
-                <Text key={author.name}>-{author.name}</Text>
-              ))}
-            </Text>
-          </View>
+        renderItem={({ item, index }) => <Book work={item as Work} />}
+        ListHeaderComponent={() => (
+          <Text style={{ fontSize: 30, textDecorationLine: "underline" }}>
+            Works
+          </Text>
         )}
         ListFooterComponent={renderFooter}
       />

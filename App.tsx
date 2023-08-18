@@ -3,6 +3,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { REACT_APP_DEV_GRAPHQL_API, REACT_APP_PROD_GRAPHQL_API } from "@env";
 import { Root } from "./app/Root";
 import { apolloDevToolsInit } from "react-native-apollo-devtools-client";
+import { MenuProvider } from "react-native-popup-menu";
 
 const uri =
   process.env.NODE_ENV === "development"
@@ -21,7 +22,9 @@ if (__DEV__) {
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <Root />
+      <MenuProvider>
+        <Root />
+      </MenuProvider>
     </ApolloProvider>
   );
 };
