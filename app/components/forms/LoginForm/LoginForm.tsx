@@ -3,8 +3,9 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { useApolloClient } from "@apollo/client";
-import { loginUser } from "api/user";
+import { makeVar, useMutation } from "@apollo/client";
+import { UserLoginPayload } from "graphql/graphql";
+import { LOGIN_USER } from "./gql/mutations/loginUser";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -40,23 +41,23 @@ type LoginFormData = {
   password: string;
 };
 
+export const userLoggedInVar = makeVar<UserLoginPayload | null>(null);
+
 export const LoginForm = () => {
   const {
     control,
     getValues,
     formState: { errors },
   } = useForm<LoginFormData>();
-  const client = useApolloClient();
+  const [loginUser] = useMutation<{ userLogin: UserLoginPayload }>(LOGIN_USER);
   const onSubmit = async () => {
-    const formData = getValues();
-    const user = await loginUser(formData);
-    client.cache.modify({
-      fields: {
-        user(data) {
-          return user;
-        },
-      },
+    const { email, password } = getValues();
+    const res = await loginUser({
+      variables: { email, password },
     });
+    if (res.data) {
+      userLoggedInVar(res.data.userLogin);
+    }
   };
 
   return (

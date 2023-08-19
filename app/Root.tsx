@@ -9,10 +9,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { LoginScreen } from "screens/LoginScreen";
 import { SignupScreen } from "screens/SignupScreen";
 import { HomeScreen } from "screens/HomeScreen";
-import { useEffect, useState } from "react";
-import { logoutUser } from "api/user";
-import axios from "axios";
-import * as SecureStore from "expo-secure-store";
+import { useMutation, useReactiveVar } from "@apollo/client";
+import { userRegisteredVar } from "components/forms/SignupForm/SignupForm";
+import { userLoggedInVar } from "components/forms/LoginForm/LoginForm";
+import { LOGOUT_USER } from "./components/navigation/navItem/gql/mutations/logoutUser";
+import { LogoutDrawerItem } from "components/navigation/navItem/Logout";
 
 export type RootDrawerParamList = {
   Login: undefined;
@@ -24,23 +25,8 @@ export type RootDrawerParamList = {
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 export const Root = () => {
-  const [userToken, setUserToken] = useState("");
-
-  const getUserToken = async () => {
-    try {
-      const token = await SecureStore.getItemAsync("token");
-      if (token) {
-        setUserToken(token);
-        axios.defaults.headers.common["Authorization"] = token;
-      }
-    } finally {
-      return;
-    }
-  };
-
-  useEffect(() => {
-    getUserToken();
-  }, []);
+  const userRegistered = useReactiveVar(userRegisteredVar || userLoggedInVar);
+  const userLoggedIn = useReactiveVar(userLoggedInVar);
 
   return (
     <NavigationContainer>
@@ -49,19 +35,13 @@ export const Root = () => {
         drawerContent={(props) => (
           <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            {!!userToken && (
-              <DrawerItem
-                label="Logout"
-                onPress={() => logoutUser()}
-                icon={() => (
-                  <MaterialIcons name="logout" size={24} color="black" />
-                )}
-              />
+            {!!(userLoggedIn || userRegistered)?.credentials?.accessToken && (
+              <LogoutDrawerItem />
             )}
           </DrawerContentScrollView>
         )}
       >
-        {!!userToken ? (
+        {!!(userLoggedIn || userRegistered)?.credentials?.accessToken ? (
           <>
             <Drawer.Screen
               name="Home"

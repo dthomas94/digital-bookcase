@@ -3,8 +3,9 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { signupUser } from "api/user";
-import { useApolloClient } from "@apollo/client";
+import { makeVar, useMutation } from "@apollo/client";
+import { REGISTER_USER } from "./gql/mutations/registerUser";
+import { UserRegisterPayload } from "graphql/graphql";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -36,10 +37,12 @@ const StyledButton = styled.Pressable`
 `;
 
 type SignupFormData = {
-  name: string;
   email: string;
   password: string;
+  passwordConfirmation: string;
 };
+
+export const userRegisteredVar = makeVar<UserRegisterPayload | null>(null);
 
 export const SignupForm = () => {
   const {
@@ -47,36 +50,23 @@ export const SignupForm = () => {
     getValues,
     formState: { errors },
   } = useForm<SignupFormData>();
-  const client = useApolloClient();
+  const [registerUser, { data }] = useMutation<{
+    userRegister: UserRegisterPayload;
+  }>(REGISTER_USER);
 
   const onSubmit = async () => {
-    const formData = getValues();
-    await signupUser(formData);
-    client.cache.modify({
-      fields: {
-        user(data) {
-          console.log(data);
-        },
-      },
+    const { email, password, passwordConfirmation } = getValues();
+    const res = await registerUser({
+      variables: { email, password, passwordConfirmation },
     });
+
+    if (res.data?.userRegister.credentials) {
+      userRegisteredVar(res.data.userRegister);
+    }
   };
 
   return (
     <StyledView>
-      <Controller
-        control={control}
-        name="name"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <StyledTextInput
-            placeholder="Full Name"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-            autoCapitalize="none"
-            returnKeyType="next"
-          />
-        )}
-      />
       <Controller
         control={control}
         name="email"
@@ -97,6 +87,19 @@ export const SignupForm = () => {
           <StyledTextInput
             secureTextEntry
             placeholder="Password"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="passwordConfirmation"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <StyledTextInput
+            secureTextEntry
+            placeholder="Password Confirmation"
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}

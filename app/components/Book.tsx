@@ -1,14 +1,10 @@
 import { AddWorkToBookcaseInput, Work } from "graphql/graphql";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { View, Text, TouchableHighlight, Pressable } from "react-native";
 import { styled } from "styled-components";
 import { ADD_WORK_TO_BOOKCASE } from "screens/gql/mutations/addWorkToBookcase";
 import { useMutation } from "@apollo/client";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { Divider } from "@react-native-material/core";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const StyledBook = styled(View)`
@@ -52,11 +48,11 @@ export const Book = ({ work }: BookProps) => {
     >
       <View style={{ flex: 1, padding: 24, rowGap: 5 }}>
         <BookContextMenuOption
-          onPress={() =>
+          onPress={async () => {
             addWorkToBookcase({
-              variables: { input: { workKey: work.key, userId: 83 } },
-            })
-          }
+              variables: { input: { workKey: work.key, userId: 6 } },
+            });
+          }}
         >
           <MaterialIcons name="library-add" size={24} color="black" />
           <Text>Add to Bookcase</Text>
