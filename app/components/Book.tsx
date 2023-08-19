@@ -1,15 +1,15 @@
 import { AddWorkToBookcaseInput, Work } from "graphql/graphql";
-import { useRef, useState } from "react";
-import { View, Text, TouchableHighlight } from "react-native";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { View, Text, TouchableHighlight, Pressable } from "react-native";
 import { styled } from "styled-components";
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from "react-native-popup-menu";
 import { ADD_WORK_TO_BOOKCASE } from "screens/gql/mutations/addWorkToBookcase";
 import { useMutation } from "@apollo/client";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { Divider } from "@react-native-material/core";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const StyledBook = styled(View)`
   width: 190px;
@@ -19,58 +19,72 @@ const StyledBook = styled(View)`
   justify-content: space-between;
 `;
 
+const BookContextMenuOption = styled(Pressable)`
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: row;
+  column-gap: 10px;
+`;
+
 type BookProps = {
   work: Work;
 };
 
 export const Book = ({ work }: BookProps) => {
-  const [isDisplayingMenu, setIsDisplayingMenu] = useState(false);
-  const contextMenuButtonRef = useRef(null);
   const [addWorkToBookcase, { data }] = useMutation<
     any,
     { input: AddWorkToBookcaseInput }
   >(ADD_WORK_TO_BOOKCASE);
 
-  const PressableBook = () => (
-    <TouchableHighlight
-      onLongPress={() => setIsDisplayingMenu(true)}
-      underlayColor="white"
-      ref={contextMenuButtonRef}
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const snapPoints = useMemo(() => [150, 150], []);
+
+  const BookContextMenu = () => (
+    <BottomSheetModal
+      ref={bottomSheetModalRef}
+      index={1}
+      snapPoints={snapPoints}
     >
-      <StyledBook>
-        <Text>{work.title}</Text>
-        {work.authors.length ? (
-          <Text>
-            By:{" "}
-            {work?.authors?.map((author) => (
-              <Text key={author.name}>{author.name}</Text>
-            ))}
-          </Text>
-        ) : null}
-      </StyledBook>
-    </TouchableHighlight>
+      <View style={{ flex: 1, padding: 24, rowGap: 5 }}>
+        <BookContextMenuOption
+          onPress={() =>
+            addWorkToBookcase({
+              variables: { input: { workKey: work.key, userId: 83 } },
+            })
+          }
+        >
+          <MaterialIcons name="library-add" size={24} color="black" />
+          <Text>Add to Bookcase</Text>
+        </BookContextMenuOption>
+      </View>
+    </BottomSheetModal>
   );
 
   return (
-    <View>
-      <Menu
-        opened={isDisplayingMenu}
-        onBackdropPress={() => setIsDisplayingMenu(false)}
+    <View style={{ flex: 1 }}>
+      <TouchableHighlight
+        onLongPress={handlePresentModalPress}
+        underlayColor="white"
       >
-        <MenuTrigger
-          customStyles={{ TriggerTouchableComponent: PressableBook }}
-        />
-        <MenuOptions>
-          <MenuOption
-            onSelect={() =>
-              addWorkToBookcase({
-                variables: { input: { workKey: work.key, userId: 83 } },
-              })
-            }
-            text="Add to Bookcase"
-          />
-        </MenuOptions>
-      </Menu>
+        <StyledBook>
+          <Text>{work.title}</Text>
+          {work.authors.length ? (
+            <Text>
+              By:{" "}
+              {work?.authors?.map((author) => (
+                <Text key={author.name}>{author.name}</Text>
+              ))}
+            </Text>
+          ) : null}
+        </StyledBook>
+      </TouchableHighlight>
+
+      <BookContextMenu />
     </View>
   );
 };

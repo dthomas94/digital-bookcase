@@ -8,6 +8,7 @@ import { useQuery } from "@apollo/client";
 import { GET_WORKS } from "./gql/queries/getWorks";
 import { debounce } from "utils/debounce";
 import { Book } from "components/Book";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export type HomeScreenProps = NativeStackScreenProps<
   RootDrawerParamList,
@@ -46,54 +47,56 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
   );
 
   return (
-    <View style={{ paddingBottom: 100, paddingHorizontal: 10 }}>
-      <TextInput onChange={(value) => debounceOnChange(value)} />
-      <FlatList
-        style={{
-          paddingBottom: 100,
-        }}
-        numColumns={2}
-        horizontal={false}
-        onEndReachedThreshold={0.2}
-        onEndReached={
-          hasNextPage
-            ? () => {
-                fetchMore({
-                  variables: { after: endCursor },
-                  updateQuery(previousQueryResult, { fetchMoreResult }) {
-                    const newNodes = fetchMoreResult.worksConnection.nodes;
-                    const pageInfo = fetchMoreResult.worksConnection.pageInfo;
-                    const res = newNodes?.length
-                      ? {
-                          // Put the new comments at the end of the list and update `pageInfo`
-                          // so we have the new `endCursor` and `hasNextPage` values
-                          worksConnection: {
-                            __typename:
-                              previousQueryResult.worksConnection.__typename,
-                            nodes: [
-                              ...previousQueryResult.worksConnection.nodes,
-                              ...newNodes,
-                            ],
-                            pageInfo,
-                          },
-                        }
-                      : previousQueryResult;
-                    return res;
-                  },
-                });
-              }
-            : undefined
-        }
-        data={works?.nodes}
-        keyExtractor={(item, index) => `${index}`}
-        renderItem={({ item, index }) => <Book work={item as Work} />}
-        ListHeaderComponent={() => (
-          <Text style={{ fontSize: 30, textDecorationLine: "underline" }}>
-            Works
-          </Text>
-        )}
-        ListFooterComponent={renderFooter}
-      />
-    </View>
+    <BottomSheetModalProvider>
+      <View style={{ paddingBottom: 100, paddingHorizontal: 10 }}>
+        <TextInput onChange={(value) => debounceOnChange(value)} />
+        <FlatList
+          style={{
+            paddingBottom: 100,
+          }}
+          numColumns={2}
+          horizontal={false}
+          onEndReachedThreshold={0.2}
+          onEndReached={
+            hasNextPage
+              ? () => {
+                  fetchMore({
+                    variables: { after: endCursor },
+                    updateQuery(previousQueryResult, { fetchMoreResult }) {
+                      const newNodes = fetchMoreResult.worksConnection.nodes;
+                      const pageInfo = fetchMoreResult.worksConnection.pageInfo;
+                      const res = newNodes?.length
+                        ? {
+                            // Put the new comments at the end of the list and update `pageInfo`
+                            // so we have the new `endCursor` and `hasNextPage` values
+                            worksConnection: {
+                              __typename:
+                                previousQueryResult.worksConnection.__typename,
+                              nodes: [
+                                ...previousQueryResult.worksConnection.nodes,
+                                ...newNodes,
+                              ],
+                              pageInfo,
+                            },
+                          }
+                        : previousQueryResult;
+                      return res;
+                    },
+                  });
+                }
+              : undefined
+          }
+          data={works?.nodes}
+          keyExtractor={(item, index) => `${index}`}
+          renderItem={({ item, index }) => <Book work={item as Work} />}
+          ListHeaderComponent={() => (
+            <Text style={{ fontSize: 30, textDecorationLine: "underline" }}>
+              Works
+            </Text>
+          )}
+          ListFooterComponent={renderFooter}
+        />
+      </View>
+    </BottomSheetModalProvider>
   );
 };
