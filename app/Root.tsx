@@ -1,6 +1,5 @@
 import {
   DrawerContentScrollView,
-  DrawerItem,
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
@@ -9,11 +8,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { LoginScreen } from "screens/LoginScreen";
 import { SignupScreen } from "screens/SignupScreen";
 import { HomeScreen } from "screens/HomeScreen";
-import { useMutation, useReactiveVar } from "@apollo/client";
-import { userRegisteredVar } from "components/forms/SignupForm/SignupForm";
-import { userLoggedInVar } from "components/forms/LoginForm/LoginForm";
-import { LOGOUT_USER } from "./components/navigation/navItem/gql/mutations/logoutUser";
+import { useReactiveVar } from "@apollo/client";
 import { LogoutDrawerItem } from "components/navigation/navItem/Logout";
+import { userVar } from "./utils/cache";
 
 export type RootDrawerParamList = {
   Login: undefined;
@@ -25,8 +22,7 @@ export type RootDrawerParamList = {
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 export const Root = () => {
-  const userRegistered = useReactiveVar(userRegisteredVar || userLoggedInVar);
-  const userLoggedIn = useReactiveVar(userLoggedInVar);
+  const user = useReactiveVar(userVar);
 
   return (
     <NavigationContainer>
@@ -35,13 +31,11 @@ export const Root = () => {
         drawerContent={(props) => (
           <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            {!!(userLoggedIn || userRegistered)?.credentials?.accessToken && (
-              <LogoutDrawerItem />
-            )}
+            {!!user?.credentials?.accessToken && <LogoutDrawerItem />}
           </DrawerContentScrollView>
         )}
       >
-        {!!(userLoggedIn || userRegistered)?.credentials?.accessToken ? (
+        {!!user?.credentials?.accessToken ? (
           <>
             <Drawer.Screen
               name="Home"

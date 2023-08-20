@@ -3,9 +3,10 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { makeVar, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { UserLoginPayload } from "graphql/graphql";
 import { LOGIN_USER } from "./gql/mutations/loginUser";
+import { userVar } from "utils/cache";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -41,8 +42,6 @@ type LoginFormData = {
   password: string;
 };
 
-export const userLoggedInVar = makeVar<UserLoginPayload | null>(null);
-
 export const LoginForm = () => {
   const {
     control,
@@ -56,7 +55,7 @@ export const LoginForm = () => {
       variables: { email, password },
     });
     if (res.data) {
-      userLoggedInVar(res.data.userLogin);
+      userVar(res.data.userLogin);
     }
   };
 

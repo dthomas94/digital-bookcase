@@ -3,9 +3,10 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
-import { makeVar, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "./gql/mutations/registerUser";
 import { UserRegisterPayload } from "graphql/graphql";
+import { userVar } from "utils/cache";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -42,8 +43,6 @@ type SignupFormData = {
   passwordConfirmation: string;
 };
 
-export const userRegisteredVar = makeVar<UserRegisterPayload | null>(null);
-
 export const SignupForm = () => {
   const {
     control,
@@ -61,7 +60,7 @@ export const SignupForm = () => {
     });
 
     if (res.data?.userRegister.credentials) {
-      userRegisteredVar(res.data.userRegister);
+      userVar(res.data.userRegister);
     }
   };
 
