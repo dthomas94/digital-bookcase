@@ -7,6 +7,7 @@ import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "./gql/mutations/registerUser";
 import { UserRegisterPayload } from "graphql/graphql";
 import { userVar } from "utils/cache";
+import { CREATE_BOOKCASE } from "screens/gql/mutations/createBookcase";
 
 const StyledView = styled.View`
   align-items: "center";
@@ -49,19 +50,20 @@ export const SignupForm = () => {
     getValues,
     formState: { errors },
   } = useForm<SignupFormData>();
-  const [registerUser, { data }] = useMutation<{
+  const [createBookcase] = useMutation(CREATE_BOOKCASE);
+  const [registerUser] = useMutation<{
     userRegister: UserRegisterPayload;
-  }>(REGISTER_USER);
+  }>(REGISTER_USER, {
+    onCompleted: (data) => {
+      userVar(data.userRegister);
+    },
+  });
 
   const onSubmit = async () => {
     const { email, password, passwordConfirmation } = getValues();
     const res = await registerUser({
       variables: { email, password, passwordConfirmation },
     });
-
-    if (res.data?.userRegister.credentials) {
-      userVar(res.data.userRegister);
-    }
   };
 
   return (

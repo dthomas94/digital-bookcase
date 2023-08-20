@@ -6,7 +6,6 @@ input AddWorkToBookcaseInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-  userId: Int!
   workKey: String!
 }
 
@@ -91,7 +90,6 @@ input CreateBookcaseInput {
   """
   clientMutationId: String
   name: String!
-  userId: Int!
 }
 
 """
@@ -227,7 +225,6 @@ input RemoveWorkFromBookcaseInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-  userId: Int!
   workKey: String!
 }
 
@@ -244,7 +241,7 @@ type RemoveWorkFromBookcasePayload {
 }
 
 type User {
-  bookcase: Bookcase!
+  bookcase: Bookcase
   email: String!
   id: ID!
   name: String!

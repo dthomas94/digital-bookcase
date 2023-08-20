@@ -13,6 +13,10 @@ export const REGISTER_USER = gql`
     ) {
       authenticatable {
         id
+        bookcase {
+          name
+          workKeys
+        }
       }
       credentials {
         accessToken

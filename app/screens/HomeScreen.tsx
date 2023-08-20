@@ -87,8 +87,8 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
               : undefined
           }
           data={works?.nodes}
-          keyExtractor={(item, index) => `${index}`}
-          renderItem={({ item, index }) => <Book work={item as Work} />}
+          keyExtractor={(_, index) => `${index}`}
+          renderItem={({ item }) => <Book work={item as Work} />}
           ListHeaderComponent={() => (
             <Text style={{ fontSize: 30, textDecorationLine: "underline" }}>
               Works
