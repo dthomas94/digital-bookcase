@@ -15,11 +15,11 @@ import { userVar } from "utils/cache";
 import { REMOVE_WORK_FROM__BOOKCASE } from "screens/gql/mutations/removeWorkFromBookcase";
 
 const StyledBook = styled(View)`
-  width: 190px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   border: 1px solid;
-  margin: 10px 5px;
   justify-content: space-between;
+  overflow: hidden;
 `;
 
 const BookContextMenuOption = styled(Pressable)`
@@ -120,38 +120,30 @@ export const Book = ({ work }: BookProps) => {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginVertical: 10, marginHorizontal: 10 }}>
       <TouchableHighlight
         onLongPress={handlePresentModalPress}
         underlayColor="white"
+        style={{ width: 100, height: 150 }}
       >
         <StyledBook>
-          <Text>{work.title}</Text>
           {work.covers.length ? (
             <Image
-              style={{ flex: 1, width: "100%", backgroundColor: "#0553" }}
+              style={{ flex: 1 }}
               source={{
                 uri: `http://covers.openlibrary.org/b/id/${work.covers[0]}-M.jpg`,
-                height: 50,
-                width: 50,
+                height: 150,
+                width: 100,
               }}
             />
-          ) : null}
-          {work.authors.length ? (
+          ) : (
             <>
-              <Image
-                style={{ flex: 1, width: "100%", backgroundColor: "#0553" }}
-                source={{
-                  uri: `http://covers.openlibrary.org/a/olid/${work.authors[0].olid}-S.jpg`,
-                  height: 50,
-                  width: 50,
-                }}
-              />
-              {work?.authors?.map((author) => (
+              <Text>{work.title}</Text>
+              {work.authors.map((author) => (
                 <Text key={author.name}>{`By ${author.name}`}</Text>
               ))}
             </>
-          ) : null}
+          )}
         </StyledBook>
       </TouchableHighlight>
 

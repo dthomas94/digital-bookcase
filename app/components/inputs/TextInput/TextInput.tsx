@@ -9,12 +9,14 @@ type TextInputProps = {
   onChange: (value: string) => void;
   label?: string;
   variant?: MaterialTextInputProps["variant"];
+  placeholder?: string;
 };
 
 export const TextInput = ({
   onChange,
   label,
   variant = "outlined",
+  placeholder,
 }: TextInputProps) => {
   const [text, onChangeText] = useState("");
 
@@ -29,6 +31,7 @@ export const TextInput = ({
         variant={variant}
         label={label}
         value={text}
+        placeholder={placeholder}
         onChangeText={handleOnChange}
       />
     </SafeAreaView>

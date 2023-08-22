@@ -1,9 +1,15 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  ListRenderItem,
+} from "react-native";
 import { RootDrawerParamList } from "app/Root";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TextInput } from "components/inputs/TextInput/TextInput";
 import { useCallback, useState } from "react";
-import { Work, WorkConnection } from "graphql/graphql";
+import { Maybe, Work, WorkConnection } from "graphql/graphql";
 import { useQuery } from "@apollo/client";
 import { GET_WORKS } from "./gql/queries/getWorks";
 import { debounce } from "utils/debounce";
@@ -35,28 +41,32 @@ export const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const endCursor = works?.pageInfo.endCursor;
 
   const renderFooter = () => (
-    <View>
+    <View style={{ height: 50, alignItems: "center" }}>
       {loading && <ActivityIndicator size="small" />}
       {hasNextPage && !loading && (
         <Text style={{ textAlign: "center" }}>Scroll for more</Text>
       )}
-      {!hasNextPage && !loading && !data && (
-        <Text>Darn, there are no more results</Text>
-      )}
+      {!hasNextPage && !loading && <Text>Darn, there are no more results</Text>}
     </View>
   );
 
   return (
     <BottomSheetModalProvider>
-      <View style={{ paddingBottom: 100, paddingHorizontal: 10 }}>
-        <TextInput onChange={(value) => debounceOnChange(value)} />
+      <View
+        style={{
+          paddingHorizontal: 10,
+          marginBottom: 50,
+        }}
+      >
+        <TextInput
+          onChange={(value) => debounceOnChange(value)}
+          placeholder="Search by Title"
+        />
         <FlatList
-          style={{
-            paddingBottom: 100,
-          }}
-          numColumns={2}
+          numColumns={3}
+          refreshing={loading}
           horizontal={false}
-          onEndReachedThreshold={0.2}
+          onEndReachedThreshold={0}
           onEndReached={
             hasNextPage
               ? () => {
