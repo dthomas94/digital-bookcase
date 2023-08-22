@@ -5,10 +5,13 @@ export const GET_WORKS = gql`
     worksConnection(title: $title, after: $after) {
       nodes {
         key
+        olid
         title
         authors {
           name
+          olid
         }
+        covers
       }
       pageInfo {
         endCursor

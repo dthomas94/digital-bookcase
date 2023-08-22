@@ -10,6 +10,7 @@ import { ADD_WORK_TO_BOOKCASE } from "screens/gql/mutations/addWorkToBookcase";
 import { useMutation, useReactiveVar } from "@apollo/client";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { userVar } from "utils/cache";
 import { REMOVE_WORK_FROM__BOOKCASE } from "screens/gql/mutations/removeWorkFromBookcase";
 
@@ -126,13 +127,30 @@ export const Book = ({ work }: BookProps) => {
       >
         <StyledBook>
           <Text>{work.title}</Text>
+          {work.covers.length ? (
+            <Image
+              style={{ flex: 1, width: "100%", backgroundColor: "#0553" }}
+              source={{
+                uri: `http://covers.openlibrary.org/b/id/${work.covers[0]}-M.jpg`,
+                height: 50,
+                width: 50,
+              }}
+            />
+          ) : null}
           {work.authors.length ? (
-            <Text>
-              By:{" "}
+            <>
+              <Image
+                style={{ flex: 1, width: "100%", backgroundColor: "#0553" }}
+                source={{
+                  uri: `http://covers.openlibrary.org/a/olid/${work.authors[0].olid}-S.jpg`,
+                  height: 50,
+                  width: 50,
+                }}
+              />
               {work?.authors?.map((author) => (
-                <Text key={author.name}>{author.name}</Text>
+                <Text key={author.name}>{`By ${author.name}`}</Text>
               ))}
-            </Text>
+            </>
           ) : null}
         </StyledBook>
       </TouchableHighlight>

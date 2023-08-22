@@ -25,6 +25,7 @@ type Author {
   key: String!
   links: [String!]
   name: String!
+  olid: String!
 }
 
 """
@@ -315,11 +316,13 @@ type UserUpdatePasswordWithTokenPayload {
 
 type Work {
   authors: [Author!]!
+  covers: [Int!]!
 
   """
   openlibrary ref string /works/OL10000000W
   """
   key: String!
+  olid: String!
   revision: Int!
   title: String!
 }

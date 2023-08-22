@@ -19,7 +19,7 @@ const documents = {
     "\n  mutation AddWorkToBookcase($input: AddWorkToBookcaseInput!) {\n    addWorkToBookcase(input: $input) {\n      bookcase {\n        name\n        workKeys\n      }\n    }\n  }\n": types.AddWorkToBookcaseDocument,
     "\n  mutation CreateBookcase($input: CreateBookcaseInput!) {\n    createBookcase(input: $input) {\n      bookcase {\n        name\n      }\n    }\n  }\n": types.CreateBookcaseDocument,
     "\n  mutation RemoveWorkFromBookcase($input: RemoveWorkFromBookcaseInput!) {\n    removeWorkFromBookcase(input: $input) {\n      bookcase {\n        name\n        workKeys\n      }\n    }\n  }\n": types.RemoveWorkFromBookcaseDocument,
-    "\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        title\n        authors {\n          name\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n": types.WorksDocument,
+    "\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        olid\n        title\n        authors {\n          name\n          olid\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n": types.WorksDocument,
 };
 
 /**
@@ -63,7 +63,7 @@ export function graphql(source: "\n  mutation RemoveWorkFromBookcase($input: Rem
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        title\n        authors {\n          name\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n"): (typeof documents)["\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        title\n        authors {\n          name\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        olid\n        title\n        authors {\n          name\n          olid\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n"): (typeof documents)["\n  query Works($title: String, $after: String) {\n    worksConnection(title: $title, after: $after) {\n      nodes {\n        key\n        olid\n        title\n        authors {\n          name\n          olid\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n        startCursor\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
