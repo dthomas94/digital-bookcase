@@ -46,7 +46,7 @@ export const SignupScreen = ({ route, navigation }: SignupScreenProps) => (
     <StyledLoginText>
       Already have an account?{" "}
       <Text
-        onPress={() => navigation.replace("Login")}
+        onPress={() => navigation.navigate("Login")}
         style={{ color: "rgb(255, 164, 61)" }}
       >
         Log In

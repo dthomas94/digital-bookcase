@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { LoginForm } from "components/forms/LoginForm/LoginForm";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootDrawerParamList } from "";
+import { RootDrawerParamList } from "app/Root";
 import { styled } from "styled-components/native";
 
 const StyledView = styled.View`
@@ -46,7 +46,7 @@ export const LoginScreen = ({ route, navigation }: LoginScreenProps) => (
     <StyledSignupText>
       Don't have an account?{" "}
       <Text
-        onPress={() => navigation.replace("Signup")}
+        onPress={() => navigation.navigate("Signup")}
         style={{ color: "rgb(255, 164, 61)" }}
       >
         Sign Up

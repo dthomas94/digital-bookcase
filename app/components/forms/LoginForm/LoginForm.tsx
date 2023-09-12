@@ -90,7 +90,7 @@ export const LoginForm = () => {
 
       <View style={{ alignSelf: "flex-end", marginTop: 10 }}>
         <StyledButton onPress={() => onSubmit()} accessibilityLabel="Login">
-          <Text style={{ color: "white" }}>LOGIN</Text>
+          <Text style={{ color: "white" }}>Log In</Text>
           <AntDesign name="arrowright" size={20} color="white" />
         </StyledButton>
       </View>
